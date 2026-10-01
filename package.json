@@ -1,0 +1,18 @@
+{
+  "name": "code-connect",
+  "private": true,
+  "scripts": {
+    "web:dev": "pnpm --filter web dev",
+    "web:build": "pnpm --filter web build",
+    "web:lint": "pnpm --filter web lint",
+    "web:preview": "pnpm --filter web preview",
+    "api:dev": "pnpm --filter api start:dev",
+    "api:start": "pnpm --filter api start",
+    "api:build": "pnpm --filter api build",
+    "api:test": "pnpm --filter api test",
+    "api:lint": "pnpm --filter api lint",
+    "dev": "pnpm --parallel --filter \"./apps/*\" run --if-present dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r --if-present test"
+  }
+}
