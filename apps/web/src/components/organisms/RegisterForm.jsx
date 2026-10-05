@@ -2,29 +2,39 @@ import { useState } from 'react'
 import Button from '../atoms/Button'
 import Checkbox from '../atoms/Checkbox'
 import Icon from '../atoms/Icon'
-import TextLink from '../atoms/TextLink'
 import FormField from '../molecules/FormField'
 
-export default function LoginForm({ onSubmit }) {
-  const [login, setLogin] = useState('')
+export default function RegisterForm({ onSubmit }) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
 
   function handleSubmit(event) {
     event.preventDefault()
-    onSubmit?.({ login, password, remember })
+    onSubmit?.({ name, email, password, remember })
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <FormField
-        label="Email ou usuário"
-        name="login"
-        placeholder="usuario123"
-        autoComplete="username"
+        label="Nome"
+        name="name"
+        placeholder="Nome completo"
+        autoComplete="name"
         required
-        value={login}
-        onChange={(event) => setLogin(event.target.value)}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+      />
+      <FormField
+        label="Email"
+        name="email"
+        type="email"
+        placeholder="Digite seu email"
+        autoComplete="email"
+        required
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
       />
       <div className="flex flex-col gap-2">
         <FormField
@@ -32,23 +42,20 @@ export default function LoginForm({ onSubmit }) {
           name="password"
           type="password"
           placeholder="******"
-          autoComplete="current-password"
+          autoComplete="new-password"
           required
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
-        <div className="flex items-center justify-between">
-          <Checkbox
-            label="Lembrar-me"
-            name="remember"
-            checked={remember}
-            onChange={(event) => setRemember(event.target.checked)}
-          />
-          <TextLink to="/esqueci-a-senha">Esqueci a senha</TextLink>
-        </div>
+        <Checkbox
+          label="Lembrar-me"
+          name="remember"
+          checked={remember}
+          onChange={(event) => setRemember(event.target.checked)}
+        />
       </div>
       <Button type="submit" className="mt-4" icon={<Icon name="arrow-right" />}>
-        Login
+        Cadastrar
       </Button>
     </form>
   )

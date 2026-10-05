@@ -20,5 +20,16 @@ describe('AuthTemplate', () => {
     expect(screen.getByText('Boas-vindas! Faça seu login.')).toBeInTheDocument()
     expect(screen.getByRole('form', { name: 'formulário' })).toBeInTheDocument()
     expect(screen.getByText('rodapé')).toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: 'Code Connect' })).not.toBeInTheDocument()
+  })
+
+  it('overlays the logo on the banner when bannerLogo is set', () => {
+    render(
+      <AuthTemplate bannerSrc="/banner-cadastro.png" bannerAlt="Banner" bannerLogo title="Cadastro">
+        <p>conteúdo</p>
+      </AuthTemplate>,
+    )
+
+    expect(screen.getByRole('img', { name: 'Code Connect' })).toBeInTheDocument()
   })
 })

@@ -13,4 +13,15 @@ describe('AuthSwitchPrompt', () => {
     expect(screen.getByText('Ainda não tem conta?')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Crie seu cadastro!' })).toHaveAttribute('href', '/cadastro')
   })
+
+  it('places the question and the link side by side in the inline layout', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <AuthSwitchPrompt question="Já tem conta?" linkText="Faça seu login!" to="/login" icon="login" layout="inline" />
+      </MemoryRouter>,
+    )
+
+    expect(container.firstChild).toHaveClass('md:flex-row')
+    expect(screen.getByRole('link', { name: 'Faça seu login!' })).toHaveAttribute('href', '/login')
+  })
 })

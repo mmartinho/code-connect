@@ -14,4 +14,10 @@ describe('Icon', () => {
 
     expect(screen.getByRole('img', { name: 'Cadastro' })).toBeInTheDocument()
   })
+
+  it('renders the login icon', () => {
+    const { container } = render(<Icon name="login" />)
+
+    expect(container.querySelector('path')).toBeInTheDocument()
+  })
 })

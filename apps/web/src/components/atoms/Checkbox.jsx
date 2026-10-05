@@ -5,12 +5,12 @@ export default function Checkbox({ label, id, ...props }) {
   const checkboxId = id ?? generatedId
 
   return (
-    <label htmlFor={checkboxId} className="flex cursor-pointer items-center gap-2 text-sm text-muted">
+    <label htmlFor={checkboxId} className="flex cursor-pointer items-center gap-2 text-[15px] text-muted">
       <span className="relative flex">
         <input
           id={checkboxId}
           type="checkbox"
-          className="peer size-6 cursor-pointer appearance-none rounded border border-offwhite checked:border-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="peer size-7 cursor-pointer appearance-none rounded border-2 border-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           {...props}
         />
         <svg

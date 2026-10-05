@@ -8,7 +8,7 @@ const providers = [
 
 export default function SocialLogin({ onSelect }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       <Divider>ou entre com outras contas</Divider>
       <div className="flex justify-center gap-6">
         {providers.map((provider) => (
