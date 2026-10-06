@@ -62,8 +62,10 @@ export class UsersController {
   @ApiOperation({ summary: 'Get the logged-in user' })
   @ApiOkResponse({ type: UserResponseDto })
   @ApiUnauthorizedResponse({ type: ErrorResponseDto })
-  me(@Req() request: { user: { sub: string } }): UserResponseDto {
-    const user = this.usersService.findById(request.user.sub);
+  async me(
+    @Req() request: { user: { sub: string } },
+  ): Promise<UserResponseDto> {
+    const user = await this.usersService.findById(request.user.sub);
     if (!user) throw new UnauthorizedException();
     return UserResponseDto.fromEntity(user);
   }

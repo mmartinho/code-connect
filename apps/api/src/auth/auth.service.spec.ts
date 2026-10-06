@@ -1,5 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InMemoryUsersRepository } from '../users/testing/in-memory-users.repository';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 
@@ -9,7 +10,7 @@ describe('AuthService', () => {
   let service: AuthService;
 
   beforeEach(async () => {
-    users = new UsersService();
+    users = new UsersService(new InMemoryUsersRepository().asRepository());
     jwt = new JwtService({ secret: 'test' });
     service = new AuthService(users, jwt);
     await users.create({
@@ -25,7 +26,7 @@ describe('AuthService', () => {
     expect(result.tokenType).toBe('Bearer');
     expect(result.expiresIn).toBe(3600);
     const payload = await jwt.verifyAsync(result.accessToken);
-    expect(payload.sub).toBe(users.findByEmail('ana@exemplo.com').id);
+    expect(payload.sub).toBe((await users.findByEmail('ana@exemplo.com')).id);
   });
 
   it('rejects an unknown email and a wrong password', async () => {

@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   async signIn(email: string, password: string): Promise<TokenResponseDto> {
-    const user = this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email);
     const valid = user && (await bcrypt.compare(password, user.passwordHash));
     if (!valid) {
       throw new UnauthorizedException('Invalid credentials');

@@ -1,8 +1,11 @@
 import { ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { QueryFailedError } from 'typeorm';
+import { InMemoryUsersRepository } from './testing/in-memory-users.repository';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {
+  let repository: InMemoryUsersRepository;
   let service: UsersService;
   const dto = {
     name: ' Ana ',
@@ -11,7 +14,8 @@ describe('UsersService', () => {
   };
 
   beforeEach(() => {
-    service = new UsersService();
+    repository = new InMemoryUsersRepository();
+    service = new UsersService(repository.asRepository());
   });
 
   it('creates a user with a hashed password and normalized fields', async () => {
@@ -32,12 +36,22 @@ describe('UsersService', () => {
     ).rejects.toBeInstanceOf(ConflictException);
   });
 
+  it('maps a unique-index violation on save to a conflict', async () => {
+    jest
+      .spyOn(repository, 'save')
+      .mockRejectedValue(
+        new QueryFailedError('INSERT', [], { code: 'ER_DUP_ENTRY' } as any),
+      );
+
+    await expect(service.create(dto)).rejects.toBeInstanceOf(ConflictException);
+  });
+
   it('finds users by email and id', async () => {
     const user = await service.create(dto);
 
-    expect(service.findByEmail('ana@exemplo.com')).toBe(user);
-    expect(service.findById(user.id)).toBe(user);
-    expect(service.findByEmail('x@y.com')).toBeUndefined();
-    expect(service.findById('nope')).toBeUndefined();
+    expect(await service.findByEmail(' ANA@exemplo.com')).toBe(user);
+    expect(await service.findById(user.id)).toBe(user);
+    expect(await service.findByEmail('x@y.com')).toBeNull();
+    expect(await service.findById('nope')).toBeNull();
   });
 });

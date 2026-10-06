@@ -9,7 +9,9 @@ pnpm workspaces monorepo (`pnpm-workspace.yaml` → `apps/*`). Use `pnpm`, not n
 - `apps/api` — NestJS 10 backend (TypeScript, Jest, ESLint + Prettier). Listens on `PORT` or 3000.
 - `apps/web` — React 19 frontend (plain JSX, Vite, oxlint). Not yet connected to the API; no proxy is configured in `vite.config.js`.
 
-Both apps are currently near-starter scaffolds (API has only `AppModule`/controller/service; web has `App.jsx`).
+- `docker-compose.yml` (root) — MySQL 5.7 on host port `3308` (WAMP usually holds 3306/3307), data in the named volume `mysql-data`. `docker/mysql/init/` creates the `code_connect_test` database on first start.
+
+The API persists data in MySQL through **TypeORM** (`@nestjs/typeorm` + `mysql2`). Connection options live in `apps/api/src/database/typeorm.options.ts` (read from `DB_*` env vars, see `apps/api/.env.example`). `synchronize` is off: schema changes go through migrations in `apps/api/src/database/migrations/`, registered explicitly in the options and applied automatically on boot (`migrationsRun`).
 
 ## Commands
 
@@ -19,6 +21,8 @@ Run from the repo root; the root scripts proxy to each app via `pnpm --filter`.
 - `pnpm web:dev` / `web:build` / `web:lint` / `web:preview`
 - `pnpm api:dev` (watch) / `api:start` / `api:build` / `api:lint` / `api:test`
 - `pnpm build`, `pnpm test` — across all workspaces
+- `pnpm db:up` / `pnpm db:down` — start/stop MySQL (`docker compose down -v` also wipes the data)
+- `pnpm --filter api migration:generate src/database/migrations/<Name>` / `migration:run` / `migration:revert` — TypeORM CLI (reads `apps/api/.env`); register new migrations in `typeorm.options.ts`
 
 Single API test (Jest, `rootDir` is `src`, matches `*.spec.ts`):
 
@@ -27,7 +31,7 @@ pnpm --filter api exec jest app.controller.spec.ts
 pnpm --filter api exec jest -t "test name"
 ```
 
-E2E tests: `pnpm --filter api test:e2e` (config in `apps/api/test/jest-e2e.json`).
+E2E tests: `pnpm --filter api test:e2e` (config in `apps/api/test/jest-e2e.json`). They need the MySQL container running and use the `code_connect_test` database (forced by `test/setup-env.ts`), clearing tables before the suite. Unit tests don't touch the database: they use `src/users/testing/in-memory-users.repository.ts` in place of `Repository<User>`.
 
 Note: `api:lint` runs ESLint with `--fix`, so it modifies files.
 ## Frontend conventions (`apps/web`)

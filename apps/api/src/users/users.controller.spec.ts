@@ -1,4 +1,5 @@
 import { UnauthorizedException } from '@nestjs/common';
+import { InMemoryUsersRepository } from './testing/in-memory-users.repository';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -12,7 +13,7 @@ describe('UsersController', () => {
   };
 
   beforeEach(() => {
-    service = new UsersService();
+    service = new UsersService(new InMemoryUsersRepository().asRepository());
     controller = new UsersController(service);
   });
 
@@ -29,8 +30,8 @@ describe('UsersController', () => {
   it('returns the logged-in user or 401 when it no longer exists', async () => {
     const user = await service.create(dto);
 
-    expect(controller.me({ user: { sub: user.id } }).id).toBe(user.id);
-    expect(() => controller.me({ user: { sub: 'gone' } })).toThrow(
+    expect((await controller.me({ user: { sub: user.id } })).id).toBe(user.id);
+    await expect(controller.me({ user: { sub: 'gone' } })).rejects.toThrow(
       UnauthorizedException,
     );
   });

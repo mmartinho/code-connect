@@ -1,8 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
+import { DataSource } from 'typeorm';
 import { AppModule } from './../src/app.module';
 import { setupApp } from './../src/setup-app';
+import { User } from './../src/users/entities/user.entity';
 
 describe('Users and auth (e2e)', () => {
   let app: INestApplication;
@@ -19,6 +21,7 @@ describe('Users and auth (e2e)', () => {
     app = moduleRef.createNestApplication();
     setupApp(app);
     await app.init();
+    await app.get(DataSource).getRepository(User).clear();
   });
 
   afterAll(() => app.close());
