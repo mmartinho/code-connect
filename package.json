@@ -14,7 +14,9 @@
     "api:build": "pnpm --filter api build",
     "api:test": "pnpm --filter api test",
     "api:lint": "pnpm --filter api lint",
-    "dev": "pnpm --parallel --filter \"./apps/*\" run --if-present dev",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "dev":"pnpm --parallel --filter \"./apps/*\" run --if-present dev",
     "build": "pnpm -r build",
     "test": "pnpm -r --if-present test"
   }
