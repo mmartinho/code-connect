@@ -17,4 +17,21 @@ describe('FormField', () => {
 
     expect(onChange).toHaveBeenCalled()
   })
+
+  it('announces the error and links it to the input', () => {
+    render(<FormField label="Senha" error="Informe a sua senha." />)
+
+    const input = screen.getByLabelText('Senha')
+
+    expect(input).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByRole('alert')).toHaveTextContent('Informe a sua senha.')
+    expect(input).toHaveAccessibleDescription('Informe a sua senha.')
+  })
+
+  it('has no error state by default', () => {
+    render(<FormField label="Senha" />)
+
+    expect(screen.getByLabelText('Senha')).not.toHaveAttribute('aria-invalid')
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
 })

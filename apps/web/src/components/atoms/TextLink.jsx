@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 
 const variants = {
   default: 'text-[15px] text-offwhite underline underline-offset-2 hover:text-brand',
-  accent: 'gap-3 text-lg text-brand hover:underline',
+  accent: 'gap-3 text-lg text-brand underline underline-offset-4 hover:brightness-125',
 }
 
 export default function TextLink({ to, variant = 'default', children, className = '', ...props }) {

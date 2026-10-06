@@ -39,4 +39,27 @@ describe('RegisterForm', () => {
 
     expect(onSubmit).not.toHaveBeenCalled()
   })
+
+  it('announces an error for each empty field and focuses the first one', async () => {
+    render(<RegisterForm />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
+
+    expect(screen.getAllByRole('alert')).toHaveLength(3)
+    expect(screen.getByLabelText('Nome')).toHaveFocus()
+  })
+
+  it('rejects an invalid email', async () => {
+    const onSubmit = vi.fn()
+    render(<RegisterForm onSubmit={onSubmit} />)
+
+    await userEvent.type(screen.getByLabelText('Nome'), 'Ana Silva')
+    await userEvent.type(screen.getByLabelText('Email'), 'ana@')
+    await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
+    await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Informe um email válido')
+    expect(screen.getByLabelText('Email')).toHaveFocus()
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
 })

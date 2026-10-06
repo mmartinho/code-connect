@@ -2,8 +2,8 @@ import Divider from '../atoms/Divider'
 import SocialButton from '../atoms/SocialButton'
 
 const providers = [
-  { id: 'github', name: 'Github', logoSrc: '/github.png' },
-  { id: 'gmail', name: 'Gmail', logoSrc: '/gmail.png' },
+  { id: 'github', name: 'Github', logoSrc: '/github.png', width: 40, height: 55 },
+  { id: 'gmail', name: 'Gmail', logoSrc: '/gmail.png', width: 33, height: 51 },
 ]
 
 export default function SocialLogin({ onSelect }) {
@@ -16,6 +16,8 @@ export default function SocialLogin({ onSelect }) {
             key={provider.id}
             name={provider.name}
             logoSrc={provider.logoSrc}
+            width={provider.width}
+            height={provider.height}
             onClick={() => onSelect?.(provider.id)}
           />
         ))}

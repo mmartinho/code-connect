@@ -17,11 +17,12 @@ describe('RegisterPage', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: 'Cadastro' })).toBeInTheDocument()
     expect(screen.getByText('Olá! Preencha seus dados.')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /pessoa de óculos/i })).toHaveAttribute('src', '/banner-cadastro.png')
+    expect(screen.getByRole('img', { name: /pessoa de óculos/i })).toHaveAttribute('src', '/banner-cadastro.webp')
     expect(screen.getByRole('img', { name: 'Code Connect' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Cadastrar' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Entrar com Gmail' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Faça seu login!' })).toHaveAttribute('href', '/login')
+    expect(document.title).toBe('Cadastro · Code Connect')
   })
 
   it('forwards the submitted data to onRegister', async () => {

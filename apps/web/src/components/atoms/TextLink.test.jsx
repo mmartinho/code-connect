@@ -20,6 +20,6 @@ describe('TextLink', () => {
       </TextLink>,
     )
 
-    expect(screen.getByRole('link')).toHaveClass('text-brand')
+    expect(screen.getByRole('link')).toHaveClass('text-brand', 'underline')
   })
 })

@@ -42,4 +42,31 @@ describe('LoginForm', () => {
 
     expect(onSubmit).not.toHaveBeenCalled()
   })
+
+  it('announces an error for each empty field and focuses the first one', async () => {
+    renderForm()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Login' }))
+
+    expect(screen.getAllByRole('alert')).toHaveLength(2)
+    expect(screen.getByLabelText('Email ou usuário')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText('Email ou usuário')).toHaveFocus()
+  })
+
+  it('clears the errors once the form is valid', async () => {
+    renderForm({ onSubmit: vi.fn() })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Login' }))
+    await userEvent.type(screen.getByLabelText('Email ou usuário'), 'usuario123')
+    await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
+    await userEvent.click(screen.getByRole('button', { name: 'Login' }))
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('explains the required-field mark', () => {
+    renderForm()
+
+    expect(screen.getByText('* Campos obrigatórios')).toBeInTheDocument()
+  })
 })

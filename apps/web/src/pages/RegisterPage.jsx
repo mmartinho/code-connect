@@ -5,19 +5,25 @@ import AuthTemplate from '../components/templates/AuthTemplate'
 
 export default function RegisterPage({ onRegister, onSocialLogin }) {
   return (
-    <AuthTemplate
-      bannerSrc="/banner-cadastro.png"
-      bannerAlt="Pessoa de óculos programando em frente a telas com interfaces verdes"
-      bannerPosition="object-[58%_50%] md:object-[76%_50%] lg:object-[60%_50%]"
-      bannerLogo
-      title="Cadastro"
-      subtitle="Olá! Preencha seus dados."
-      footer={
-        <AuthSwitchPrompt question="Já tem conta?" linkText="Faça seu login!" to="/login" icon="login" layout="inline" />
-      }
-    >
-      <RegisterForm onSubmit={onRegister} />
-      <SocialLogin onSelect={onSocialLogin} />
-    </AuthTemplate>
+    <>
+      <title>Cadastro · Code Connect</title>
+      <meta name="description" content="Crie a sua conta no Code Connect e comece a compartilhar projetos e ideias." />
+      <AuthTemplate
+        bannerSrc="/banner-cadastro.webp"
+        bannerWidth={1344}
+        bannerHeight={896}
+        bannerAlt="Pessoa de óculos programando em frente a telas com interfaces verdes"
+        bannerPosition="object-[58%_50%] md:object-[76%_50%] lg:object-[60%_50%]"
+        bannerLogo
+        title="Cadastro"
+        subtitle="Olá! Preencha seus dados."
+        footer={
+          <AuthSwitchPrompt question="Já tem conta?" linkText="Faça seu login!" to="/login" icon="login" layout="inline" />
+        }
+      >
+        <RegisterForm onSubmit={onRegister} />
+        <SocialLogin onSelect={onSocialLogin} />
+      </AuthTemplate>
+    </>
   )
 }

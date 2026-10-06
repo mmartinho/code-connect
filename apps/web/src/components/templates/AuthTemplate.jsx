@@ -5,6 +5,8 @@ import Logo from '../atoms/Logo'
 export default function AuthTemplate({
   bannerSrc,
   bannerAlt,
+  bannerWidth,
+  bannerHeight,
   bannerPosition = 'object-bottom lg:object-center',
   bannerLogo = false,
   title,
@@ -19,7 +21,15 @@ export default function AuthTemplate({
 
       <main className="relative flex w-full max-w-[648px] flex-col gap-8 rounded-2xl border border-page bg-surface px-4 py-8 md:rounded-[32px] md:px-[60px] md:py-14 lg:max-w-[996px] lg:flex-row lg:items-start lg:justify-between lg:gap-0 lg:px-[78px]">
         <div className="relative h-[360px] w-full shrink-0 overflow-hidden md:mx-auto md:h-[415px] md:max-w-[480px] lg:mx-0 lg:h-auto lg:w-[407px] lg:max-w-none lg:self-stretch">
-          <img src={bannerSrc} alt={bannerAlt} className={`absolute inset-0 size-full object-cover ${bannerPosition}`} />
+          <img
+            src={bannerSrc}
+            alt={bannerAlt}
+            width={bannerWidth}
+            height={bannerHeight}
+            fetchPriority="high"
+            decoding="async"
+            className={`absolute inset-0 size-full object-cover ${bannerPosition}`}
+          />
           {bannerLogo && (
             <div className="absolute inset-x-0 bottom-6 flex justify-center md:bottom-8 lg:bottom-9">
               <Logo />

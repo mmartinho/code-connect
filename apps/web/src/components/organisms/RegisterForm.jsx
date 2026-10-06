@@ -3,26 +3,42 @@ import Button from '../atoms/Button'
 import Checkbox from '../atoms/Checkbox'
 import Icon from '../atoms/Icon'
 import FormField from '../molecules/FormField'
+import { emailMessage, focusFirstInvalid, hasErrors, requiredMessage } from '../../utils/validation'
 
 export default function RegisterForm({ onSubmit }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
+  const [errors, setErrors] = useState({})
 
   function handleSubmit(event) {
     event.preventDefault()
+
+    const nextErrors = {
+      name: requiredMessage(name, 'Informe o seu nome.'),
+      email: emailMessage(email),
+      password: requiredMessage(password, 'Informe uma senha.'),
+    }
+    setErrors(nextErrors)
+
+    if (hasErrors(nextErrors)) {
+      focusFirstInvalid(event.currentTarget, nextErrors)
+      return
+    }
     onSubmit?.({ name, email, password, remember })
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+      <p className="text-[15px] text-muted">* Campos obrigatórios</p>
       <FormField
         label="Nome"
         name="name"
         placeholder="Nome completo"
         autoComplete="name"
         required
+        error={errors.name}
         value={name}
         onChange={(event) => setName(event.target.value)}
       />
@@ -33,6 +49,7 @@ export default function RegisterForm({ onSubmit }) {
         placeholder="Digite seu email"
         autoComplete="email"
         required
+        error={errors.email}
         value={email}
         onChange={(event) => setEmail(event.target.value)}
       />
@@ -44,6 +61,7 @@ export default function RegisterForm({ onSubmit }) {
           placeholder="******"
           autoComplete="new-password"
           required
+          error={errors.password}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
