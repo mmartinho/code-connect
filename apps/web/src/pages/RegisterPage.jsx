@@ -1,9 +1,30 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import AuthSwitchPrompt from '../components/molecules/AuthSwitchPrompt'
 import SocialLogin from '../components/molecules/SocialLogin'
 import RegisterForm from '../components/organisms/RegisterForm'
 import AuthTemplate from '../components/templates/AuthTemplate'
+import { useAuth } from '../context/AuthContext'
+import { getErrorMessage } from '../services/errors'
 
-export default function RegisterPage({ onRegister, onSocialLogin }) {
+export default function RegisterPage({ onSocialLogin }) {
+  const { register } = useAuth()
+  const navigate = useNavigate()
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState()
+
+  async function handleRegister(data) {
+    setSubmitting(true)
+    setError(undefined)
+    try {
+      await register(data)
+      navigate('/perfil', { replace: true })
+    } catch (err) {
+      setError(getErrorMessage(err))
+      setSubmitting(false)
+    }
+  }
+
   return (
     <>
       <title>Cadastro · Code Connect</title>
@@ -21,7 +42,7 @@ export default function RegisterPage({ onRegister, onSocialLogin }) {
           <AuthSwitchPrompt question="Já tem conta?" linkText="Faça seu login!" to="/login" icon="login" layout="inline" />
         }
       >
-        <RegisterForm onSubmit={onRegister} />
+        <RegisterForm onSubmit={handleRegister} submitting={submitting} error={error} />
         <SocialLogin onSelect={onSocialLogin} />
       </AuthTemplate>
     </>

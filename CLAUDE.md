@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 pnpm workspaces monorepo (`pnpm-workspace.yaml` → `apps/*`). Use `pnpm`, not npm/yarn.
 
 - `apps/api` — NestJS 10 backend (TypeScript, Jest, ESLint + Prettier). Listens on `PORT` or 3000.
-- `apps/web` — React 19 frontend (plain JSX, Vite, oxlint). Not yet connected to the API; no proxy is configured in `vite.config.js`.
+- `apps/web` — React 19 frontend (plain JSX, Vite, oxlint). Talks to the API through Axios (`src/services/api.js`, base URL from `VITE_API_URL`, default `http://localhost:3000/v1`; see `apps/web/.env.example`). Auth state lives in `src/context/AuthContext.jsx` and the JWT is kept in `localStorage`/`sessionStorage` (`src/services/tokenStorage.js`). To use it locally run `pnpm db:up`, `pnpm api:dev` and `pnpm web:dev` together; the API allows the Vite origin via `WEB_ORIGIN`.
 
 - `docker-compose.yml` (root) — MySQL 5.7 on host port `3308` (WAMP usually holds 3306/3307), data in the named volume `mysql-data`. `docker/mysql/init/` creates the `code_connect_test` database on first start.
 

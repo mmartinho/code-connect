@@ -15,7 +15,7 @@ describe('LoginForm', () => {
   it('renders the login fields, remember-me, forgot password link and submit button', () => {
     renderForm()
 
-    expect(screen.getByLabelText('Email ou usuário')).toBeInTheDocument()
+    expect(screen.getByLabelText('Email')).toBeInTheDocument()
     expect(screen.getByLabelText('Senha')).toHaveAttribute('type', 'password')
     expect(screen.getByRole('checkbox', { name: 'Lembrar-me' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Esqueci a senha' })).toBeInTheDocument()
@@ -26,12 +26,12 @@ describe('LoginForm', () => {
     const onSubmit = vi.fn()
     renderForm({ onSubmit })
 
-    await userEvent.type(screen.getByLabelText('Email ou usuário'), 'usuario123')
+    await userEvent.type(screen.getByLabelText('Email'), 'ana@email.com')
     await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
     await userEvent.click(screen.getByRole('checkbox', { name: 'Lembrar-me' }))
     await userEvent.click(screen.getByRole('button', { name: 'Login' }))
 
-    expect(onSubmit).toHaveBeenCalledWith({ login: 'usuario123', password: 'segredo', remember: true })
+    expect(onSubmit).toHaveBeenCalledWith({ email: 'ana@email.com', password: 'segredo', remember: true })
   })
 
   it('does not submit when required fields are empty', async () => {
@@ -49,19 +49,43 @@ describe('LoginForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Login' }))
 
     expect(screen.getAllByRole('alert')).toHaveLength(2)
-    expect(screen.getByLabelText('Email ou usuário')).toHaveAttribute('aria-invalid', 'true')
-    expect(screen.getByLabelText('Email ou usuário')).toHaveFocus()
+    expect(screen.getByLabelText('Email')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText('Email')).toHaveFocus()
   })
 
   it('clears the errors once the form is valid', async () => {
     renderForm({ onSubmit: vi.fn() })
 
     await userEvent.click(screen.getByRole('button', { name: 'Login' }))
-    await userEvent.type(screen.getByLabelText('Email ou usuário'), 'usuario123')
+    await userEvent.type(screen.getByLabelText('Email'), 'ana@email.com')
     await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
     await userEvent.click(screen.getByRole('button', { name: 'Login' }))
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('rejects an invalid email', async () => {
+    const onSubmit = vi.fn()
+    renderForm({ onSubmit })
+
+    await userEvent.type(screen.getByLabelText('Email'), 'ana@')
+    await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
+    await userEvent.click(screen.getByRole('button', { name: 'Login' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Informe um email válido')
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('disables the button while submitting', () => {
+    renderForm({ submitting: true })
+
+    expect(screen.getByRole('button', { name: 'Entrando…' })).toBeDisabled()
+  })
+
+  it('shows the server error', () => {
+    renderForm({ error: 'Email ou senha inválidos.' })
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Email ou senha inválidos.')
   })
 
   it('explains the required-field mark', () => {

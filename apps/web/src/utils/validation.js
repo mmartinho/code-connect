@@ -18,3 +18,7 @@ export function focusFirstInvalid(form, errors) {
   const field = [...form.elements].find((element) => errors[element.name])
   field?.focus()
 }
+
+export function minLengthMessage(value, min, message) {
+  return value.length >= min ? undefined : message
+}

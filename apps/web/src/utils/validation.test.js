@@ -1,4 +1,4 @@
-import { emailMessage, focusFirstInvalid, hasErrors, requiredMessage } from './validation'
+import { emailMessage, focusFirstInvalid, hasErrors, minLengthMessage, requiredMessage } from './validation'
 
 describe('validation', () => {
   it('requires a non-blank value', () => {
@@ -24,5 +24,12 @@ describe('validation', () => {
     focusFirstInvalid(form, { b: 'erro', c: 'erro' })
 
     expect(document.activeElement).toBe(form.elements.b)
+  })
+})
+
+describe('minLengthMessage', () => {
+  it('returns the message only when the value is too short', () => {
+    expect(minLengthMessage('1234567', 8, 'curta')).toBe('curta')
+    expect(minLengthMessage('12345678', 8, 'curta')).toBeUndefined()
   })
 })

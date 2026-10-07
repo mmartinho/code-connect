@@ -19,14 +19,14 @@ describe('RegisterForm', () => {
 
     await userEvent.type(screen.getByLabelText('Nome'), 'Ana Silva')
     await userEvent.type(screen.getByLabelText('Email'), 'ana@email.com')
-    await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
+    await userEvent.type(screen.getByLabelText('Senha'), 'segredo123')
     await userEvent.click(screen.getByRole('checkbox', { name: 'Lembrar-me' }))
     await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
 
     expect(onSubmit).toHaveBeenCalledWith({
       name: 'Ana Silva',
       email: 'ana@email.com',
-      password: 'segredo',
+      password: 'segredo123',
       remember: true,
     })
   })
@@ -49,13 +49,38 @@ describe('RegisterForm', () => {
     expect(screen.getByLabelText('Nome')).toHaveFocus()
   })
 
+  it('rejects a password shorter than 8 characters', async () => {
+    const onSubmit = vi.fn()
+    render(<RegisterForm onSubmit={onSubmit} />)
+
+    await userEvent.type(screen.getByLabelText('Nome'), 'Ana Silva')
+    await userEvent.type(screen.getByLabelText('Email'), 'ana@email.com')
+    await userEvent.type(screen.getByLabelText('Senha'), '1234567')
+    await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('pelo menos 8 caracteres')
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('disables the button while submitting', () => {
+    render(<RegisterForm submitting />)
+
+    expect(screen.getByRole('button', { name: 'Cadastrando…' })).toBeDisabled()
+  })
+
+  it('shows the server error', () => {
+    render(<RegisterForm error="Este email já está cadastrado." />)
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Este email já está cadastrado.')
+  })
+
   it('rejects an invalid email', async () => {
     const onSubmit = vi.fn()
     render(<RegisterForm onSubmit={onSubmit} />)
 
     await userEvent.type(screen.getByLabelText('Nome'), 'Ana Silva')
     await userEvent.type(screen.getByLabelText('Email'), 'ana@')
-    await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
+    await userEvent.type(screen.getByLabelText('Senha'), 'segredo123')
     await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
 
     expect(screen.getByRole('alert')).toHaveTextContent('Informe um email válido')

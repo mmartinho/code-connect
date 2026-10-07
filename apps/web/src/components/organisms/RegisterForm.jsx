@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import Alert from '../atoms/Alert'
 import Button from '../atoms/Button'
 import Checkbox from '../atoms/Checkbox'
 import Icon from '../atoms/Icon'
 import FormField from '../molecules/FormField'
-import { emailMessage, focusFirstInvalid, hasErrors, requiredMessage } from '../../utils/validation'
+import { emailMessage, focusFirstInvalid, hasErrors, minLengthMessage, requiredMessage } from '../../utils/validation'
 
-export default function RegisterForm({ onSubmit }) {
+export default function RegisterForm({ onSubmit, submitting = false, error }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,7 +19,9 @@ export default function RegisterForm({ onSubmit }) {
     const nextErrors = {
       name: requiredMessage(name, 'Informe o seu nome.'),
       email: emailMessage(email),
-      password: requiredMessage(password, 'Informe uma senha.'),
+      password:
+        requiredMessage(password, 'Informe uma senha.') ??
+        minLengthMessage(password, 8, 'A senha deve ter pelo menos 8 caracteres.'),
     }
     setErrors(nextErrors)
 
@@ -32,6 +35,7 @@ export default function RegisterForm({ onSubmit }) {
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
       <p className="text-[15px] text-muted">* Campos obrigatórios</p>
+      <Alert>{error}</Alert>
       <FormField
         label="Nome"
         name="name"
@@ -72,8 +76,8 @@ export default function RegisterForm({ onSubmit }) {
           onChange={(event) => setRemember(event.target.checked)}
         />
       </div>
-      <Button type="submit" className="mt-4" icon={<Icon name="arrow-right" />}>
-        Cadastrar
+      <Button type="submit" className="mt-4" disabled={submitting} icon={<Icon name="arrow-right" />}>
+        {submitting ? 'Cadastrando…' : 'Cadastrar'}
       </Button>
     </form>
   )
