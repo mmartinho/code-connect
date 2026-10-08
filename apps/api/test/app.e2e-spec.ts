@@ -4,7 +4,6 @@ import * as request from 'supertest';
 import { DataSource } from 'typeorm';
 import { AppModule } from './../src/app.module';
 import { setupApp } from './../src/setup-app';
-import { User } from './../src/users/entities/user.entity';
 
 describe('Users and auth (e2e)', () => {
   let app: INestApplication;
@@ -21,7 +20,8 @@ describe('Users and auth (e2e)', () => {
     app = moduleRef.createNestApplication();
     setupApp(app);
     await app.init();
-    await app.get(DataSource).getRepository(User).clear();
+    // Posts, likes and comments cascade from users; TRUNCATE would fail on FKs.
+    await app.get(DataSource).query('DELETE FROM users');
   });
 
   afterAll(() => app.close());
