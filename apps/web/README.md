@@ -1,16 +1,49 @@
-# React + Vite
+# Code Connect: Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Frontend do Code Connect, uma SPA em React que consome a [API](../api/README.md).
 
-Currently, two official plugins are available:
+Voltar para o [README principal](../../README.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+React 19, Vite, Tailwind CSS v4, React Router, Axios, oxlint, Vitest + Testing Library e Playwright + axe (acessibilidade).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Rotas
 
-## Expanding the Oxlint configuration
+| Rota | Acesso |
+| --- | --- |
+| `/feed` | Público (filtros na URL: `?q=&tags=&sort=`) |
+| `/posts/:id` | Público |
+| `/login`, `/cadastro` | Visitantes |
+| `/publicar`, `/perfil` | Exigem login |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Configuração
+
+Copie `.env.example` para `.env`:
+
+| Variável | Padrão |
+| --- | --- |
+| `VITE_API_URL` | `http://localhost:3000/v1` |
+
+A API precisa estar no ar (`pnpm db:up` e `pnpm api:dev` na raiz).
+
+## Estrutura
+
+- `src/components/`: atomic design (`atoms` → `molecules` → `organisms` → `templates`); níveis inferiores nunca importam dos superiores
+- `src/pages/`: páginas
+- `src/services/`: cliente Axios e armazenamento do token
+- `src/context/`: estado de autenticação
+- Estilos com Tailwind; os tokens de design ficam no `@theme` de `src/index.css`
+- Todo componente tem um teste ao lado (`Button.jsx` → `Button.test.jsx`)
+
+## Scripts
+
+```bash
+pnpm --filter web dev          # ou pnpm web:dev na raiz
+pnpm --filter web build
+pnpm --filter web preview
+pnpm --filter web lint
+pnpm --filter web test         # Vitest
+pnpm --filter web test:a11y    # Playwright + axe
+pnpm --filter web lighthouse
+```
