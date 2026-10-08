@@ -12,6 +12,12 @@ describe('getErrorMessage', () => {
     expect(getErrorMessage(httpError(409))).toBe('Este email já está cadastrado.')
   })
 
+  it('maps permission, missing resource and oversized upload', () => {
+    expect(getErrorMessage(httpError(403))).toBe('Você não tem permissão para fazer isso.')
+    expect(getErrorMessage(httpError(404))).toBe('Conteúdo não encontrado.')
+    expect(getErrorMessage(httpError(413))).toBe('A imagem deve ter no máximo 2 MB.')
+  })
+
   it('joins the validation messages of a 422', () => {
     expect(getErrorMessage(httpError(422, { message: ['a', 'b'] }))).toBe('a b')
     expect(getErrorMessage(httpError(422, { message: 'single' }))).toBe('single')

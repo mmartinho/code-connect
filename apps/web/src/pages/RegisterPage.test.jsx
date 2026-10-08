@@ -11,7 +11,7 @@ function renderPage() {
     <MemoryRouter initialEntries={['/cadastro']}>
       <Routes>
         <Route path="/cadastro" element={<RegisterPage />} />
-        <Route path="/perfil" element={<p>profile page</p>} />
+        <Route path="/feed" element={<p>feed page</p>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -55,7 +55,7 @@ describe('RegisterPage', () => {
       password: 'segredo123',
       remember: false,
     })
-    expect(await screen.findByText('profile page')).toBeInTheDocument()
+    expect(await screen.findByText('feed page')).toBeInTheDocument()
   })
 
   it('shows the error when the email is already registered', async () => {

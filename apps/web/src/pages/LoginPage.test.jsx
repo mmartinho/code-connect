@@ -11,7 +11,7 @@ function renderPage() {
     <MemoryRouter initialEntries={['/login']}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/perfil" element={<p>profile page</p>} />
+        <Route path="/feed" element={<p>feed page</p>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -48,7 +48,7 @@ describe('LoginPage', () => {
     await fillAndSubmit()
 
     expect(login).toHaveBeenCalledWith({ email: 'ana@email.com', password: 'segredo123', remember: false })
-    expect(await screen.findByText('profile page')).toBeInTheDocument()
+    expect(await screen.findByText('feed page')).toBeInTheDocument()
   })
 
   it('shows the error when the credentials are rejected', async () => {

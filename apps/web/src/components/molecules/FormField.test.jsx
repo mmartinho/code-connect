@@ -28,6 +28,14 @@ describe('FormField', () => {
     expect(input).toHaveAccessibleDescription('Informe a sua senha.')
   })
 
+  it('renders a textarea when multiline', () => {
+    render(<FormField label="Descrição" multiline rows={8} />)
+
+    const field = screen.getByLabelText('Descrição')
+    expect(field.tagName).toBe('TEXTAREA')
+    expect(field).toHaveAttribute('rows', '8')
+  })
+
   it('has no error state by default', () => {
     render(<FormField label="Senha" />)
 

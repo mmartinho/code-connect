@@ -9,7 +9,7 @@ function renderRoute() {
   return render(
     <MemoryRouter initialEntries={['/login']}>
       <Routes>
-        <Route path="/perfil" element={<p>profile page</p>} />
+        <Route path="/feed" element={<p>feed page</p>} />
         <Route
           path="/login"
           element={
@@ -38,10 +38,10 @@ describe('GuestOnly', () => {
     expect(screen.getByText('login page')).toBeInTheDocument()
   })
 
-  it('redirects authenticated users to the profile', () => {
+  it('redirects authenticated users to the feed', () => {
     useAuth.mockReturnValue({ status: 'authenticated' })
     renderRoute()
 
-    expect(screen.getByText('profile page')).toBeInTheDocument()
+    expect(screen.getByText('feed page')).toBeInTheDocument()
   })
 })

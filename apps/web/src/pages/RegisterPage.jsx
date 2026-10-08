@@ -18,7 +18,7 @@ export default function RegisterPage({ onSocialLogin }) {
     setError(undefined)
     try {
       await register(data)
-      navigate('/perfil', { replace: true })
+      navigate('/feed', { replace: true })
     } catch (err) {
       setError(getErrorMessage(err))
       setSubmitting(false)

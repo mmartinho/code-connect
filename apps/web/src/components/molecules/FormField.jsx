@@ -1,18 +1,20 @@
 import { useId } from 'react'
 import Input from '../atoms/Input'
 import Label from '../atoms/Label'
+import Textarea from '../atoms/Textarea'
 
-export default function FormField({ label, id, error, required, ...inputProps }) {
+export default function FormField({ label, id, error, required, multiline = false, ...inputProps }) {
   const generatedId = useId()
   const inputId = id ?? generatedId
   const errorId = `${inputId}-error`
+  const Control = multiline ? Textarea : Input
 
   return (
     <div className="flex flex-col gap-2">
       <Label htmlFor={inputId} required={required}>
         {label}
       </Label>
-      <Input
+      <Control
         id={inputId}
         required={required}
         aria-invalid={error ? true : undefined}

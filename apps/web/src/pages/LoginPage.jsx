@@ -19,7 +19,7 @@ export default function LoginPage({ onSocialLogin }) {
     setError(undefined)
     try {
       await login(credentials)
-      navigate(location.state?.from?.pathname ?? '/perfil', { replace: true })
+      navigate(location.state?.from?.pathname ?? '/feed', { replace: true })
     } catch (err) {
       setError(getErrorMessage(err))
       setSubmitting(false)
