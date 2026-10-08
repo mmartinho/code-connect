@@ -13,6 +13,13 @@ pnpm workspaces monorepo (`pnpm-workspace.yaml` → `apps/*`). Use `pnpm`, not n
 
 The API persists data in MySQL through **TypeORM** (`@nestjs/typeorm` + `mysql2`). Connection options live in `apps/api/src/database/typeorm.options.ts` (read from `DB_*` env vars, see `apps/api/.env.example`). `synchronize` is off: schema changes go through migrations in `apps/api/src/database/migrations/`, registered explicitly in the options and applied automatically on boot (`migrationsRun`).
 
+### Posts feed (feature map)
+
+- **API** (`apps/api/src`): `posts/` (posts, tags, likes; `GET /v1/posts?q=&tags=&sort=recent|popular&page=&limit=`, full-text search through `MATCH … AGAINST` on a FULLTEXT index over title+body, see `posts/search-query.ts`), `comments/` (`/v1/posts/:postId/comments`, one reply level). Reads are public through `auth/optional-auth.guard.ts` (valid token only adds `likedByMe`/`canDelete`); writes use `AuthGuard`; only the author can `DELETE` a post. `@CurrentUser()` returns the JWT `sub`.
+- **Uploads:** thumbnails are sent as multipart (`thumbnail`, jpeg/png/webp, ≤ 2 MB, checked by magic bytes in `posts/thumbnail.validator.ts`), stored in `apps/api/uploads/` (git-ignored) and served at `/uploads`. `API_PUBLIC_URL` builds the absolute URLs.
+- **E2E cleanup:** tests delete with `DELETE FROM users` (cascade); `TRUNCATE users` fails now that tables reference it.
+- **Web** (`apps/web/src`): pages `/feed` and `/posts/:id` are public, `/publicar` and `/perfil` need login. Pages share `templates/AppTemplate` (menu `organisms/Sidebar`, whose last item is "Sair"/"Login" depending on the session). Posts without a thumbnail render the code-editor placeholder in `molecules/PostThumbnail`. Feed filters live in the URL (`?q=&tags=&sort=`).
+
 ## Commands
 
 Run from the repo root; the root scripts proxy to each app via `pnpm --filter`.
@@ -23,6 +30,7 @@ Run from the repo root; the root scripts proxy to each app via `pnpm --filter`.
 - `pnpm build`, `pnpm test` — across all workspaces
 - `pnpm db:up` / `pnpm db:down` — start/stop MySQL (`docker compose down -v` also wipes the data)
 - `pnpm --filter api migration:generate src/database/migrations/<Name>` / `migration:run` / `migration:revert` — TypeORM CLI (reads `apps/api/.env`); register new migrations in `typeorm.options.ts`
+- `pnpm db:seed` — recreate the demo data (idempotent): 5 users (`julio@seed.codeconnect.dev`, `marcia@…`, `gabriel@…`, `marcela@…`, `ana@…`, all with password `senha-segura-123`), 8 posts with tags, likes and comments, and thumbnails copied from `apps/api/src/database/seeds/assets/` to `apps/api/uploads/`. Only data owned by `@seed.codeconnect.dev` users is removed on re-run.
 
 Single API test (Jest, `rootDir` is `src`, matches `*.spec.ts`):
 
@@ -37,7 +45,7 @@ Note: `api:lint` runs ESLint with `--fix`, so it modifies files.
 ## Frontend conventions (`apps/web`)
 
 - **Atomic design.** Organize components under `src/components/` by level: `atoms/` (button, input, icon), `molecules/` (atoms combined into a single-purpose unit, e.g. form field), `organisms/` (self-contained UI sections, e.g. header, post list), `templates/` (page layouts without real data), and pages under `src/pages/`. Lower levels never import from higher ones (atoms ← molecules ← organisms ← templates ← pages).
-- **Tailwind CSS** is the styling approach. Style with utility classes in JSX; avoid ad-hoc CSS files and inline `style` props. Tailwind is not installed yet — add it (with its Vite plugin) when the first styled component is created.
+- **Tailwind CSS** is the styling approach. Style with utility classes in JSX; avoid ad-hoc CSS files and inline `style` props. Tailwind v4 is installed (`@tailwindcss/vite`); design tokens live in the `@theme` block of `src/index.css` (`brand`, `page`, `surface`, `muted`, `light`, `offwhite`…), so use them instead of hex values.
 - **Every component must have a test** covering its essential use (renders, main props/variants, primary interaction). Keep the test next to the component (`Button.jsx` → `Button.test.jsx`). A component is not done until its test exists and passes.
 
 ## Backend conventions (`apps/api`)
