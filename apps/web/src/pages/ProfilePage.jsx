@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import Button from '../components/atoms/Button'
 import Heading from '../components/atoms/Heading'
-import Logo from '../components/atoms/Logo'
+import AppTemplate from '../components/templates/AppTemplate'
 import { useAuth } from '../context/AuthContext'
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' })
@@ -18,9 +18,8 @@ export default function ProfilePage() {
   return (
     <>
       <title>Perfil · Code Connect</title>
-      <main className="flex min-h-screen items-center justify-center bg-page p-6">
+      <AppTemplate>
         <section className="flex w-full max-w-[420px] flex-col gap-8 rounded-2xl bg-surface p-8">
-          <Logo />
           <Heading>Meu perfil</Heading>
           <dl className="flex flex-col gap-4 text-offwhite">
             <div>
@@ -38,7 +37,7 @@ export default function ProfilePage() {
           </dl>
           <Button onClick={handleLogout}>Sair</Button>
         </section>
-      </main>
+      </AppTemplate>
     </>
   )
 }

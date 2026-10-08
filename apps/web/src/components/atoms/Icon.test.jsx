@@ -20,4 +20,23 @@ describe('Icon', () => {
 
     expect(container.querySelector('path')).toBeInTheDocument()
   })
+
+  it.each([
+    'feed',
+    'account-circle',
+    'info',
+    'logout',
+    'search',
+    'code',
+    'share',
+    'chat',
+    'close',
+    'upload',
+    'publish',
+    'delete',
+  ])('has a glyph for %s', (name) => {
+    const { container } = render(<Icon name={name} />)
+
+    expect(container.querySelector('path')).toBeInTheDocument()
+  })
 })
